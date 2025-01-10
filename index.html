@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Imágenes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestor de Imágenes</h1>
+        <input type="file" id="fileInput" accept="image/*" />
+        <button class="btn" onclick="loadImage()">Cargar Imagen</button>
+        <button class="btn" onclick="clearImage()">Borrar Imagen</button>
+        <div id="imagePreview"></div>
+    </div>
+
+    <script>
+        function loadImage() {
+            const fileInput = document.getElementById("fileInput");
+            const imagePreview = document.getElementById("imagePreview");
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Imagen cargada" />`;
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                alert("Por favor selecciona una imagen.");
+            }
+        }
+
+        function clearImage() {
+            const imagePreview = document.getElementById("imagePreview");
+            imagePreview.innerHTML = "";
+        }
+    </script>
+</body>
+</html>
