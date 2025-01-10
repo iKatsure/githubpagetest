@@ -44,12 +44,16 @@
     <div class="container">
         <h1>Gestor de Imágenes</h1>
         <input type="file" id="fileInput" accept="image/*" />
-        <button class="btn" onclick="loadImage()">Cargar Imagen</button>
+        <button class="btn" onclick="loadImage()">Previsualizar Imagen</button>
+        <button class="btn" onclick="sendToBot()">Enviar al Bot</button>
         <button class="btn" onclick="clearImage()">Borrar Imagen</button>
         <div id="imagePreview"></div>
+        <p id="responseMessage"></p>
     </div>
 
     <script>
+        let selectedFile = null;
+
         function loadImage() {
             const fileInput = document.getElementById("fileInput");
             const imagePreview = document.getElementById("imagePreview");
@@ -60,14 +64,51 @@
                     imagePreview.innerHTML = `<img src="${e.target.result}" alt="Imagen cargada" />`;
                 };
                 reader.readAsDataURL(fileInput.files[0]);
+                selectedFile = fileInput.files[0];
             } else {
                 alert("Por favor selecciona una imagen.");
             }
         }
 
+        function sendToBot() {
+            if (!selectedFile) {
+                alert("Primero selecciona y previsualiza una imagen.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            const botToken = "7706563007:AAHe5n96KA6Ss_bIIGegGPXCxaHXA1Hz6fQ"; // Reemplaza con el token de Bot 2
+            const chatId = "7706563007"; // Reemplaza con el chat ID de Bot 2
+            const url = `https://api.telegram.org/bot${botToken}/sendDocument`;
+
+            formData.append("chat_id", chatId);
+
+            const responseMessage = document.getElementById("responseMessage");
+
+            fetch(url, {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((result) => {
+                    if (result.ok) {
+                        responseMessage.textContent = "Imagen enviada al bot correctamente.";
+                    } else {
+                        responseMessage.textContent = "Error al enviar la imagen al bot.";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    responseMessage.textContent = "Hubo un error al procesar tu solicitud.";
+                });
+        }
+
         function clearImage() {
             const imagePreview = document.getElementById("imagePreview");
             imagePreview.innerHTML = "";
+            selectedFile = null;
         }
     </script>
 </body>
